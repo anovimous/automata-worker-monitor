@@ -1,6 +1,11 @@
 package redact
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+
+	"github.com/anovimous/automata-worker-monitor/internal/contracttest"
+)
 
 func TestLine(t *testing.T) {
 	cases := []struct {
@@ -11,13 +16,13 @@ func TestLine(t *testing.T) {
 		{"http url with user info", `Get "http://user:pw@localhost:8080/api": refused`, `Get "http://***@localhost:8080/api": refused`},
 		{"url already redacted", "http://***@localhost:8080", "http://***@localhost:8080"},
 		{"url without user info", "http://localhost:8080/a@b", "http://localhost:8080/a@b"},
-		{"bearer header", "Authorization: Bearer eyJhbGciOi.x.y", "Authorization: Bearer ***"},
+		{"bearer header", "Authorization: Bearer eyJhbGci.x.y", "Authorization: Bearer ***"},
 		{"basic header", "authorization=Basic dXNlcjpwYXNz rest", "authorization=Basic *** rest"},
 		{"bare authorization", "Authorization: abc123", "Authorization: ***"},
 		{"cookie header", "Cookie: session=abc; theme=dark", "Cookie: ***"},
 		{"set-cookie", "Set-Cookie: id=a3fWa; Secure", "Set-Cookie: ***"},
 		{"api key header", "X-Api-Key: k-123, next", "X-Api-Key: ***, next"},
-		{"env style token", "TOKEN=abc123 PASSWORD=hunter2", "TOKEN=*** PASSWORD=***"},
+		{"env style token", "TOKEN=abc PASSWORD=hunter2", "TOKEN=*** PASSWORD=***"},
 		{"json password", `{"user":"a","password":"x y"}`, `{"user":"a","password":***}`},
 		{"secret with spaces", "secret : 'a b c'", "secret : ***"},
 		{"curl header single quotes", `ffuf -H 'Authorization: Bearer abc def' -u http://t/FUZZ`, `ffuf -H 'Authorization: ***' -u http://t/FUZZ`},
@@ -51,5 +56,48 @@ func TestLineIsIdempotent(t *testing.T) {
 		if twice := Line(once); twice != once {
 			t.Errorf("Line(Line(%q)) = %q, want %q", in, twice, once)
 		}
+	}
+}
+
+// The error texts of the contract samples were sanitized by the worker, so the rules must leave them as they are.
+func TestSampleErrorsAreAlreadyRedacted(t *testing.T) {
+	for _, name := range []string{"worker-status.v1.running.json", "worker-status.v1.idle.json",
+		"worker-machine-controller-snapshot.sample.json"} {
+		var doc any
+		if err := json.Unmarshal(contracttest.Read(t, name), &doc); err != nil {
+			t.Fatal(err)
+		}
+		for _, s := range lastErrors(doc) {
+			if got := Line(s); got != s {
+				t.Errorf("%s: Line(%q) = %q, want it unchanged", name, s, got)
+			}
+		}
+	}
+}
+
+// lastErrors collects every non-empty "lastError" string of a JSON document.
+func lastErrors(v any) []string {
+	var out []string
+	switch v := v.(type) {
+	case map[string]any:
+		for k, x := range v {
+			if s, ok := x.(string); ok && k == "lastError" && s != "" {
+				out = append(out, s)
+			}
+			out = append(out, lastErrors(x)...)
+		}
+	case []any:
+		for _, x := range v {
+			out = append(out, lastErrors(x)...)
+		}
+	}
+	return out
+}
+
+func TestLastErrorsFindsNestedValues(t *testing.T) {
+	doc := map[string]any{"lastError": "a", "x": []any{map[string]any{"lastError": "b"}, map[string]any{"lastError": ""}}}
+	got := lastErrors(doc)
+	if len(got) != 2 {
+		t.Errorf("lastErrors = %v, want [a b] in any order", got)
 	}
 }
