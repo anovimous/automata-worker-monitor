@@ -1,0 +1,28 @@
+{
+  "workerId": "w-host1-k3f9qa",
+  "createdBy": "operator:alice",
+  "template": {
+    "name": "default",
+    "image": "automata-worker:0.4.0",
+    "pullPolicy": "if-missing",
+    "envFile": "default",
+    "env": {
+      "CENTRAL_POLL_INTERVAL_SECONDS": "5"
+    },
+    "network": "automata_backend",
+    "extraHosts": [],
+    "cpus": 2.0,
+    "memoryBytes": 4294967296,
+    "pidsLimit": 512,
+    "wordlistCacheMaxBytes": 1610612736,
+    "tmpfsSocketsBytes": 16777216,
+    "restartPolicy": {
+      "name": "on-failure",
+      "maxRetries": 5
+    },
+    "stopTimeoutSeconds": 60,
+    "extraLabels": {
+      "team": "red"
+    }
+  }
+}

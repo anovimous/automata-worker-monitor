@@ -1,0 +1,230 @@
+{
+  "hostName": "host1",
+  "workerMachineControllerVersion": "0.1.0",
+  "now": "2026-10-29T10:42:14Z",
+  "host": {
+    "sampledAt": "2026-10-29T10:42:12Z",
+    "cpus": 8,
+    "cpuUsageRatio": 0.41,
+    "load1": 2.1,
+    "load5": 1.8,
+    "load15": 1.5,
+    "memoryTotalBytes": 33554432000,
+    "memoryAvailableBytes": 20132659200,
+    "swapUsedBytes": 0,
+    "disks": [
+      {
+        "path": "/host/var/lib/docker",
+        "totalBytes": 500107862016,
+        "freeBytes": 312567889920
+      }
+    ],
+    "networks": [
+      {
+        "interface": "eth0",
+        "rxBytesTotal": 98765432100,
+        "txBytesTotal": 1234567890,
+        "rxBytesPerSec": 1310000,
+        "txBytesPerSec": 102000
+      }
+    ],
+    "uptimeSeconds": 864000,
+    "kernel": "7.0.0-38-generic",
+    "dockerVersion": "29.6.1"
+  },
+  "workers": [
+    {
+      "workerId": "w-host1-k3f9qa",
+      "managed": true,
+      "template": "default",
+      "container": {
+        "id": "6f1c2b9a0d3e",
+        "name": "automata-worker-w-host1-k3f9qa",
+        "image": "automata-worker:0.4.0",
+        "state": "running",
+        "status": "Up 44 minutes (healthy)",
+        "health": "healthy",
+        "exitCode": 0,
+        "startedAt": "2026-10-29T09:58:01Z",
+        "finishedAt": null,
+        "restartCount": 0,
+        "oomKilled": false,
+        "oomEvents": 0,
+        "networkMode": "bridge",
+        "ip": "172.20.0.5",
+        "labels": {
+          "automata.worker.id": "w-host1-k3f9qa",
+          "automata.worker.managed-by": "automata-worker-monitor",
+          "automata.worker.template": "default",
+          "automata.worker.network-mode": "bridge",
+          "automata.worker.telemetry-port": "9464",
+          "automata.worker.created-at": "2026-10-29T09:57:58Z",
+          "automata.worker.created-by": "operator:alice"
+        },
+        "limits": {
+          "cpus": 2.0,
+          "memoryBytes": 4294967296,
+          "pids": 512
+        }
+      },
+      "resources": {
+        "sampledAt": "2026-10-29T10:42:13Z",
+        "cpuCores": 1.73,
+        "cpuUsageSecondsTotal": 4812.2,
+        "cpuThrottledSecondsTotal": 12.4,
+        "memoryWorkingSetBytes": 812646400,
+        "memoryUsageBytes": 1003020288,
+        "memoryLimitBytes": 4294967296,
+        "pids": 9,
+        "pidsLimit": 512,
+        "blockReadBytesTotal": 10485760,
+        "blockWriteBytesTotal": 73400320,
+        "netRxBytesTotal": 9437184000,
+        "netTxBytesTotal": 1048576000,
+        "netRxBytesPerSec": 1250000,
+        "netTxBytesPerSec": 98000
+      },
+      "telemetry": {
+        "configured": true,
+        "url": "http://172.20.0.5:9464",
+        "ok": true,
+        "fetchedAt": "2026-10-29T10:42:13Z",
+        "latencyMs": 3,
+        "consecutiveFailures": 0,
+        "lastError": "",
+        "status": {
+          "schemaVersion": 1,
+          "workerId": "w-host1-k3f9qa",
+          "version": "0.4.0",
+          "commit": "1a4c23f",
+          "goVersion": "go1.26.2",
+          "pid": 7,
+          "startedAt": "2026-10-29T09:58:02Z",
+          "now": "2026-10-29T10:42:13Z",
+          "phase": "RUNNING_JOB",
+          "phaseDetail": "",
+          "phaseSince": "2026-10-29T10:30:41Z",
+          "phaseBudgetSeconds": 30,
+          "lastProgressAt": "2026-10-29T10:42:11Z",
+          "draining": false,
+          "shuttingDown": false,
+          "job": {
+            "jobId": 4211,
+            "routineKey": "fuzz",
+            "command": "ffuf-connector",
+            "state": "RUNNING",
+            "takenAt": "2026-10-29T10:28:55Z",
+            "startedAt": "2026-10-29T10:30:40Z",
+            "connector": {
+              "connected": true,
+              "lastMessageAt": "2026-10-29T10:42:10Z",
+              "lastHeartbeatAt": "2026-10-29T10:42:10Z",
+              "heartbeatIntervalSeconds": 5,
+              "heartbeatTimeoutSeconds": 60
+            },
+            "resources": {
+              "sampledAt": "2026-10-29T10:42:13Z",
+              "job": {
+                "cpuUsageSeconds": 812.41,
+                "memoryBytes": null,
+                "memoryPeakBytes": null,
+                "pids": null
+              },
+              "tool": {
+                "cpuUsageSeconds": 803.02,
+                "memoryBytes": null,
+                "memoryPeakBytes": null,
+                "pids": null
+              }
+            }
+          },
+          "dependencies": {
+            "rabbitmq": {
+              "up": true,
+              "lastSuccessAt": "2026-10-29T10:28:55Z",
+              "lastErrorAt": null,
+              "lastError": "",
+              "errorsTotal": 0
+            },
+            "core": {
+              "up": null,
+              "lastSuccessAt": "2026-10-29T10:42:05Z",
+              "lastErrorAt": "2026-10-29T10:12:00Z",
+              "lastError": "failed to poll central service for job 4188: Get \"http://***@localhost:8080/api/external/jobs/http/poll/4188\": dial tcp 127.0.0.1:8080: connect: connection refused",
+              "errorsTotal": 3
+            },
+            "objectStorage": {
+              "up": null,
+              "lastSuccessAt": "2026-10-29T10:29:31Z",
+              "lastErrorAt": null,
+              "lastError": "",
+              "errorsTotal": 0
+            }
+          },
+          "wordlistCache": {
+            "dir": "/var/cache/automata/wordlists",
+            "bytes": 734003200,
+            "files": 4,
+            "maxBytes": 1610612736,
+            "pinnedFiles": 1
+          },
+          "counters": {
+            "messagesTaken": 37,
+            "messagesSkipped": 2,
+            "jobsStarted": 34,
+            "jobsByOutcome": {
+              "FINISHED": 30,
+              "FAILED": 2,
+              "CANCELED": 1,
+              "NOT_STARTED": 2
+            }
+          }
+        }
+      },
+      "flags": []
+    },
+    {
+      "workerId": "compose-worker-1",
+      "managed": false,
+      "template": "",
+      "container": {
+        "id": "a77e01c4f2b8",
+        "name": "automata-worker-orchestrator-1",
+        "image": "automata-worker:dev",
+        "state": "exited",
+        "status": "Exited (1) 3 minutes ago",
+        "health": "",
+        "exitCode": 1,
+        "startedAt": "2026-10-29T10:20:00Z",
+        "finishedAt": "2026-10-29T10:39:02Z",
+        "restartCount": 5,
+        "oomKilled": false,
+        "oomEvents": 0,
+        "networkMode": "host",
+        "ip": "",
+        "labels": {
+          "automata.worker.id": "compose-worker-1",
+          "automata.worker.network-mode": "host",
+          "automata.worker.telemetry-port": "9464"
+        },
+        "limits": {
+          "cpus": null,
+          "memoryBytes": null,
+          "pids": null
+        }
+      },
+      "resources": null,
+      "telemetry": {
+        "configured": true,
+        "url": "http://127.0.0.1:9464",
+        "ok": false,
+        "fetchedAt": null,
+        "latencyMs": null,
+        "consecutiveFailures": 0,
+        "lastError": "",
+        "status": null
+      },
+      "flags": []
+    }
+  ]
+}

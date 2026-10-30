@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "workerId": "w-host1-k3f9qa",
+  "version": "0.4.0",
+  "commit": "1a4c23f",
+  "goVersion": "go1.26.2",
+  "pid": 7,
+  "startedAt": "2026-10-29T09:58:02Z",
+  "now": "2026-10-29T10:42:13Z",
+  "phase": "RUNNING_JOB",
+  "phaseDetail": "",
+  "phaseSince": "2026-10-29T10:30:41Z",
+  "phaseBudgetSeconds": 30,
+  "lastProgressAt": "2026-10-29T10:42:11Z",
+  "draining": false,
+  "shuttingDown": false,
+  "job": {
+    "jobId": 4211,
+    "routineKey": "fuzz",
+    "command": "ffuf-connector",
+    "state": "RUNNING",
+    "takenAt": "2026-10-29T10:28:55Z",
+    "startedAt": "2026-10-29T10:30:40Z",
+    "connector": {
+      "connected": true,
+      "lastMessageAt": "2026-10-29T10:42:10Z",
+      "lastHeartbeatAt": "2026-10-29T10:42:10Z",
+      "heartbeatIntervalSeconds": 5,
+      "heartbeatTimeoutSeconds": 60
+    },
+    "resources": {
+      "sampledAt": "2026-10-29T10:42:13Z",
+      "job": {
+        "cpuUsageSeconds": 812.41,
+        "memoryBytes": null,
+        "memoryPeakBytes": null,
+        "pids": null
+      },
+      "tool": {
+        "cpuUsageSeconds": 803.02,
+        "memoryBytes": null,
+        "memoryPeakBytes": null,
+        "pids": null
+      }
+    }
+  },
+  "dependencies": {
+    "rabbitmq": {
+      "up": true,
+      "lastSuccessAt": "2026-10-29T10:28:55Z",
+      "lastErrorAt": null,
+      "lastError": "",
+      "errorsTotal": 0
+    },
+    "core": {
+      "up": null,
+      "lastSuccessAt": "2026-10-29T10:42:05Z",
+      "lastErrorAt": "2026-10-29T10:12:00Z",
+      "lastError": "failed to poll central service for job 4188: Get \"http://***@localhost:8080/api/external/jobs/http/poll/4188\": dial tcp 127.0.0.1:8080: connect: connection refused",
+      "errorsTotal": 3
+    },
+    "objectStorage": {
+      "up": null,
+      "lastSuccessAt": "2026-10-29T10:29:31Z",
+      "lastErrorAt": null,
+      "lastError": "",
+      "errorsTotal": 0
+    }
+  },
+  "wordlistCache": {
+    "dir": "/var/cache/automata/wordlists",
+    "bytes": 734003200,
+    "files": 4,
+    "maxBytes": 1610612736,
+    "pinnedFiles": 1
+  },
+  "counters": {
+    "messagesTaken": 37,
+    "messagesSkipped": 2,
+    "jobsStarted": 34,
+    "jobsByOutcome": {
+      "FINISHED": 30,
+      "FAILED": 2,
+      "CANCELED": 1,
+      "NOT_STARTED": 2
+    }
+  }
+}

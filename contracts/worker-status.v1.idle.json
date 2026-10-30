@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "workerId": "w-host1-p0m2zt",
+  "version": "0.4.0",
+  "commit": "1a4c23f",
+  "goVersion": "go1.26.2",
+  "pid": 7,
+  "startedAt": "2026-10-29T10:40:00Z",
+  "now": "2026-10-29T10:42:13Z",
+  "phase": "IDLE",
+  "phaseDetail": "",
+  "phaseSince": "2026-10-29T10:40:01Z",
+  "phaseBudgetSeconds": 30,
+  "lastProgressAt": "2026-10-29T10:42:12Z",
+  "draining": false,
+  "shuttingDown": false,
+  "job": null,
+  "dependencies": {
+    "rabbitmq": {
+      "up": true,
+      "lastSuccessAt": "2026-10-29T10:42:12Z",
+      "lastErrorAt": null,
+      "lastError": "",
+      "errorsTotal": 0
+    },
+    "core": {
+      "up": null,
+      "lastSuccessAt": null,
+      "lastErrorAt": null,
+      "lastError": "",
+      "errorsTotal": 0
+    },
+    "objectStorage": {
+      "up": null,
+      "lastSuccessAt": null,
+      "lastErrorAt": null,
+      "lastError": "",
+      "errorsTotal": 0
+    }
+  },
+  "wordlistCache": null,
+  "counters": {
+    "messagesTaken": 0,
+    "messagesSkipped": 0,
+    "jobsStarted": 0,
+    "jobsByOutcome": {}
+  }
+}
