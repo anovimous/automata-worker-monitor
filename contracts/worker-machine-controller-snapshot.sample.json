@@ -107,6 +107,7 @@
         "latencyMs": 3,
         "consecutiveFailures": 0,
         "lastError": "",
+        "lastErrorCode": "",
         "status": {
           "schemaVersion": 1,
           "workerId": "w-host1-k3f9qa",
@@ -255,6 +256,7 @@
         "latencyMs": null,
         "consecutiveFailures": 0,
         "lastError": "",
+        "lastErrorCode": "",
         "status": null
       },
       "flags": []
