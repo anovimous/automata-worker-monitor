@@ -162,15 +162,25 @@ type Volume struct {
 
 // Telemetry is the latest scrape of the worker's GET /status.
 type Telemetry struct {
-	Configured          bool              `json:"configured"`
-	URL                 string            `json:"url"`
-	OK                  bool              `json:"ok"`
-	FetchedAt           *time.Time        `json:"fetchedAt"`
-	LatencyMs           *int64            `json:"latencyMs"`
-	ConsecutiveFailures int               `json:"consecutiveFailures"`
-	LastError           string            `json:"lastError"`
-	Status              *workerapi.Status `json:"status"`
+	Configured          bool       `json:"configured"`
+	URL                 string     `json:"url"`
+	OK                  bool       `json:"ok"`
+	FetchedAt           *time.Time `json:"fetchedAt"`
+	LatencyMs           *int64     `json:"latencyMs"`
+	ConsecutiveFailures int        `json:"consecutiveFailures"`
+	LastError           string     `json:"lastError"` // redacted
+	LastErrorCode       string     `json:"lastErrorCode"`
+	// Status is the last document fetched; it stays after a failure, and is null once the container stops
+	Status *workerapi.Status `json:"status"`
 }
+
+// Error codes of a failed scrape (Telemetry.LastErrorCode), the reasons the health engine shows.
+const (
+	ScrapeUnreachable       = "STATUS_UNREACHABLE" // no connection
+	ScrapeTimeout           = "STATUS_TIMEOUT"     // no answer within 2 s
+	ScrapeInvalid           = "STATUS_INVALID"     // not a 200, not JSON, or over 1 MiB
+	ScrapeUnsupportedSchema = "UNSUPPORTED_SCHEMA" // a schema version the monitor does not know
+)
 
 // WorkerDetail is the body of GET /v1/workers/{id}: the observation and a subset of docker inspect.
 type WorkerDetail struct {

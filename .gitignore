@@ -5,3 +5,5 @@ web/dist
 *.db
 .env
 deploy/**/secrets
+deploy/**/*.env
+deploy/**/tls/
