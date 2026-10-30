@@ -1,0 +1,7 @@
+.git
+.claude
+bin
+web/node_modules
+web/dist
+*.db
+.env
