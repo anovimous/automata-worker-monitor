@@ -1,0 +1,30 @@
+# The configuration of the workers control plane (plan/07-workers-control-plane.md §1). ${NAME} is taken from the
+# env var NAME (workers-control-plane.env). Every key below has this default when left out, except hosts.
+listen: "127.0.0.1:9490"
+tls: {cert: "", key: ""}
+database: "/var/lib/automata-monitor/monitor.db"
+hosts:
+  - name: "host1"
+    workerMachineControllerUrl: "http://127.0.0.1:9480"
+    controlToken: "${HOST1_WORKER_MACHINE_CONTROLLER_TOKEN}"
+    caFile: ""          # PEM of the CA of the controller's certificate, for an https URL
+    maxWorkers: 20      # creating workers is refused above it (stopped workers count)
+history:
+  retentionDays: 14
+polling:
+  intervalSeconds: 5
+  workerMachineControllerTimeoutSeconds: 4
+health:
+  workerMachineControllerUnknownAfterSeconds: 15
+  startingGraceSeconds: 60
+  unresponsiveAfterFailures: 3
+  degradedMemoryRatio: 0.9
+  degradedHeartbeatFactor: 3
+  coreErrorRecentSeconds: 300
+  restartWindowSeconds: 900
+  slowStatusMs: 1000
+  provisionTimeoutSeconds: 120
+retention:
+  eventsDays: 30
+  removedWorkersDays: 30
+seedTemplates: true     # insert the "default" template on the first start

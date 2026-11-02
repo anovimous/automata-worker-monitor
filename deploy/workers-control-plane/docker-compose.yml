@@ -1,0 +1,28 @@
+# The workers control plane (plan/10-deployment-security.md §3): one container, its SQLite database in a volume.
+# Before the first start:
+#   cp config.yml.example config.yml
+#   cp workers-control-plane.env.example workers-control-plane.env   # the tokens of the worker machine controllers
+#
+# There is no login: whoever reaches the control plane can run every action. It listens on 127.0.0.1:9490 of this
+# machine; for remote access put a TLS reverse proxy in front that only the operators can reach.
+#
+# Host networking reaches a worker machine controller of the same machine at 127.0.0.1:9480. With a bridge network
+# instead, set listen to 0.0.0.0:9490 in config.yml, publish "127.0.0.1:9490:9490", and reach a local controller
+# through host.docker.internal (extra_hosts host-gateway), which then must listen on an address the bridge reaches.
+services:
+  workers-control-plane:
+    image: automata-workers-control-plane:${MONITOR_VERSION:?set MONITOR_VERSION, e.g. 0.1.0}
+    container_name: automata-workers-control-plane
+    restart: unless-stopped
+    network_mode: host
+    env_file: ./workers-control-plane.env
+    environment:
+      MONITOR_CONFIG: /etc/automata-monitor/config.yml
+      LOG_FORMAT: json
+    volumes:
+      - ./config.yml:/etc/automata-monitor/config.yml:ro
+      # SQLite: templates, workers, events (and from P6 the history)
+      - monitor_data:/var/lib/automata-monitor
+
+volumes:
+  monitor_data: {}
