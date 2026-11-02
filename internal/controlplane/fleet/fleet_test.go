@@ -677,3 +677,66 @@ func TestPurge(t *testing.T) {
 		t.Errorf("events = %v, want the old one purged", evs)
 	}
 }
+
+func TestACrashedWorkerIsStoppedOrRestartedNotKilled(t *testing.T) {
+	e := newEnv(t)
+	id := e.createActive()
+	// Docker gave up restarting it: the container stays exited, the worker stays ACTIVE (and DOWN)
+	e.client.set(id, exited(1))
+	e.poll(5 * time.Second)
+	v := e.view(id)
+	if v.Lifecycle != "ACTIVE" || !slices.Equal(v.AllowedActions, []string{"stop", "restart"}) {
+		t.Fatalf("crashed worker: %s, actions %v", v.Lifecycle, v.AllowedActions)
+	}
+	var fe *Error
+	if _, err := e.f.Act(context.Background(), id, "kill", ActionOptions{}); !errors.As(err, &fe) || fe.Code != "INVALID_TRANSITION" {
+		t.Errorf("kill of an exited container = %v, want INVALID_TRANSITION", err)
+	}
+	if slices.Contains(e.client.Calls(), "kill "+id) {
+		t.Error("the kill reached the worker machine controller")
+	}
+	if _, err := e.f.Act(context.Background(), id, "stop", ActionOptions{}); err != nil {
+		t.Fatalf("stop: %v", err)
+	}
+	e.poll(5 * time.Second)
+	if v := e.view(id); v.Lifecycle != "STOPPED" || !slices.Contains(v.AllowedActions, "remove") {
+		t.Errorf("after the stop: %s, actions %v", v.Lifecycle, v.AllowedActions)
+	}
+}
+
+func TestRemovingAFailedProvisionStopsItsContainerFirst(t *testing.T) {
+	e := newEnv(t)
+	res, _ := e.f.Create(context.Background(), "host1", e.tmpl.ID, 1)
+	id := res.Workers[0].ID
+	// it runs but never gives a good status
+	e.poll(time.Minute)
+	e.poll(time.Minute + time.Second)
+	if v := e.view(id); v.Lifecycle != "PROVISION_FAILED" {
+		t.Fatalf("lifecycle = %s", v.Lifecycle)
+	}
+	if _, err := e.f.Act(context.Background(), id, "remove", ActionOptions{RemoveVolumes: true}); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	calls := e.client.Calls()
+	stop, remove := slices.Index(calls, "stop "+id), slices.Index(calls, "remove+volumes "+id)
+	if stop < 0 || remove < stop {
+		t.Errorf("calls = %v, want a stop before the remove", calls)
+	}
+	if _, ok := e.f.Worker(id); ok {
+		t.Error("the worker is still in the view")
+	}
+}
+
+func TestRemovingAStoppedWorkerDoesNotStopIt(t *testing.T) {
+	e := newEnv(t)
+	id := e.createActive()
+	e.f.Act(context.Background(), id, "stop", ActionOptions{})
+	e.poll(5 * time.Second)
+	before := len(e.client.Calls())
+	if _, err := e.f.Act(context.Background(), id, "remove", ActionOptions{}); err != nil {
+		t.Fatal(err)
+	}
+	if calls := e.client.Calls()[before:]; !slices.Equal(calls, []string{"remove " + id}) {
+		t.Errorf("calls = %v, want the remove only", calls)
+	}
+}

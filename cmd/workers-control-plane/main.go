@@ -21,6 +21,7 @@ import (
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/fleet"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/sse"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/store"
+	"github.com/anovimous/automata-worker-monitor/web"
 )
 
 const (
@@ -97,7 +98,7 @@ func run() int {
 
 	srv := &http.Server{
 		Addr: cfg.Listen,
-		Handler: api.NewHandler(api.Deps{Fleet: fl, Store: st, Broker: broker, PollIntervalSeconds: cfg.Polling.IntervalSeconds,
+		Handler: api.NewHandler(api.Deps{Fleet: fl, Store: st, Broker: broker, UI: web.Files(), PollIntervalSeconds: cfg.Polling.IntervalSeconds,
 			HistoryRetentionDays: cfg.History.RetentionDays, Now: now}),
 		BaseContext:       func(net.Listener) context.Context { return requestCtx },
 		ReadHeaderTimeout: 10 * time.Second,

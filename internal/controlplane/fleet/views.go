@@ -107,7 +107,7 @@ func (f *Fleet) viewOf(w *worker) WorkerView {
 	if h, ok := f.hosts[r.Host]; ok {
 		cordoned = h.cordoned
 	}
-	v.AllowedActions = lifecycle.Allowed(r.Lifecycle, cordoned)
+	v.AllowedActions = lifecycle.Allowed(r.Lifecycle, cordoned, running(w))
 
 	o := w.obs
 	if o == nil {
@@ -254,6 +254,12 @@ func (f *Fleet) hostViewOf(h *host) HostView {
 		v.Capacity.CPUs, v.Capacity.MemoryBytes = h.metrics.CPUs, h.metrics.MemoryTotalBytes
 	}
 	return v
+}
+
+// running tells whether the container of a worker runs; without an observation yet it is taken as running, so that
+// the actions stay offered (the worker machine controller refuses what Docker can not do).
+func running(w *worker) bool {
+	return w.obs == nil || w.obs.Container.State == "running"
 }
 
 // busy tells whether a worker works on a job (from PREPARING to FINISHING).
