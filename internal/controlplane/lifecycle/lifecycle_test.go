@@ -12,21 +12,27 @@ func TestAllowedActions(t *testing.T) {
 	tests := []struct {
 		lc       string
 		cordoned bool
+		running  bool
 		want     []string
 	}{
-		{Provisioning, false, []string{}},
-		{ProvisionFailed, false, []string{"remove"}},
-		{Active, false, []string{"drain", "stop", "kill", "restart"}},
-		{Draining, false, []string{"undrain", "stop", "kill"}},
-		{Stopping, false, []string{"kill"}},
-		{Stopped, false, []string{"start", "remove"}},
-		{Stopped, true, []string{"remove"}},
-		{Removing, false, []string{}},
-		{Removed, false, []string{}},
+		{Provisioning, false, true, []string{}},
+		{ProvisionFailed, false, true, []string{"remove"}},
+		{Active, false, true, []string{"drain", "stop", "kill", "restart"}},
+		{Draining, false, true, []string{"undrain", "stop", "kill"}},
+		{Stopping, false, true, []string{"kill"}},
+		{Stopped, false, false, []string{"start", "remove"}},
+		{Stopped, true, false, []string{"remove"}},
+		{Removing, false, false, []string{}},
+		{Removed, false, false, []string{}},
+		// a container that does not run can not be signalled or killed: a crashed worker is stopped or restarted
+		{Active, false, false, []string{"stop", "restart"}},
+		{Draining, false, false, []string{"stop"}},
+		{Stopping, false, false, []string{}},
+		{ProvisionFailed, false, false, []string{"remove"}},
 	}
 	for _, tt := range tests {
-		if got := Allowed(tt.lc, tt.cordoned); !slices.Equal(got, tt.want) {
-			t.Errorf("Allowed(%s, cordoned %v) = %v, want %v", tt.lc, tt.cordoned, got, tt.want)
+		if got := Allowed(tt.lc, tt.cordoned, tt.running); !slices.Equal(got, tt.want) {
+			t.Errorf("Allowed(%s, cordoned %v, running %v) = %v, want %v", tt.lc, tt.cordoned, tt.running, got, tt.want)
 		}
 	}
 }
@@ -34,22 +40,24 @@ func TestAllowedActions(t *testing.T) {
 func TestCheck(t *testing.T) {
 	every := []string{ActionDrain, ActionUndrain, ActionStop, ActionKill, ActionRestart, ActionStart, ActionRemove}
 	for _, lc := range []string{Provisioning, ProvisionFailed, Active, Draining, Stopping, Stopped, Removing, Removed} {
-		for _, action := range every {
-			err := Check(lc, action, false)
-			want := slices.Contains(Allowed(lc, false), action)
-			if (err == nil) != want {
-				t.Errorf("Check(%s, %s) = %v, want allowed %v", lc, action, err, want)
-			}
-			var te *TransitionError
-			if err != nil && (!errors.As(err, &te) || !strings.Contains(err.Error(), "INVALID_TRANSITION")) {
-				t.Errorf("Check(%s, %s) = %v, want a TransitionError", lc, action, err)
+		for _, running := range []bool{true, false} {
+			for _, action := range every {
+				err := Check(lc, action, false, running)
+				want := slices.Contains(Allowed(lc, false, running), action)
+				if (err == nil) != want {
+					t.Errorf("Check(%s, %s, running %v) = %v, want allowed %v", lc, action, running, err, want)
+				}
+				var te *TransitionError
+				if err != nil && (!errors.As(err, &te) || !strings.Contains(err.Error(), "INVALID_TRANSITION")) {
+					t.Errorf("Check(%s, %s) = %v, want a TransitionError", lc, action, err)
+				}
 			}
 		}
 	}
-	if err := Check(Stopped, ActionStart, true); !errors.Is(err, ErrHostCordoned) {
+	if err := Check(Stopped, ActionStart, true, false); !errors.Is(err, ErrHostCordoned) {
 		t.Errorf("start on a cordoned host = %v, want HOST_CORDONED", err)
 	}
-	err := Check(Active, ActionStart, false)
+	err := Check(Active, ActionStart, false, true)
 	var te *TransitionError
 	if !errors.As(err, &te) || !slices.Equal(te.Allowed, []string{"drain", "stop", "kill", "restart"}) {
 		t.Errorf("error = %v, want the allowed actions named", err)

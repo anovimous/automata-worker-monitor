@@ -67,7 +67,8 @@ func (f *Fleet) Act(ctx context.Context, id, action string, opts ActionOptions) 
 		return ActionResult{}, errorf(http.StatusNotFound, "NOT_FOUND", "no worker %s", id)
 	}
 	h := f.hosts[w.row.Host]
-	if err := lifecycle.Check(w.row.Lifecycle, action, h.cordoned); err != nil {
+	isRunning := running(w)
+	if err := lifecycle.Check(w.row.Lifecycle, action, h.cordoned, isRunning); err != nil {
 		f.mu.Unlock()
 		if errors.Is(err, lifecycle.ErrHostCordoned) {
 			return ActionResult{}, errorf(http.StatusConflict, "HOST_CORDONED", "%v", err)
@@ -90,7 +91,7 @@ func (f *Fleet) Act(ctx context.Context, id, action string, opts ActionOptions) 
 	f.publishWorker(w)
 	f.mu.Unlock()
 
-	obs, removed, err := f.call(ctx, client, id, action, timeout, opts.RemoveVolumes)
+	obs, removed, err := f.call(ctx, client, id, action, timeout, opts.RemoveVolumes, isRunning)
 
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -146,9 +147,9 @@ func (f *Fleet) stopTimeout(w *worker, opts ActionOptions) time.Duration {
 }
 
 // call sends an action to the worker machine controller, with a deadline that leaves a stop its timeout.
-func (f *Fleet) call(ctx context.Context, c Client, id, action string, stopTimeout time.Duration, removeVolumes bool) (*controllerapi.WorkerObservation, controllerapi.RemoveResponse, error) {
+func (f *Fleet) call(ctx context.Context, c Client, id, action string, stopTimeout time.Duration, removeVolumes, running bool) (*controllerapi.WorkerObservation, controllerapi.RemoveResponse, error) {
 	limit := 30 * time.Second
-	if action == lifecycle.ActionStop || action == lifecycle.ActionRestart {
+	if action == lifecycle.ActionStop || action == lifecycle.ActionRestart || action == lifecycle.ActionRemove && running {
 		limit = stopTimeout + 30*time.Second
 	}
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), limit)
@@ -169,6 +170,13 @@ func (f *Fleet) call(ctx context.Context, c Client, id, action string, stopTimeo
 	case lifecycle.ActionStart:
 		o, err = c.Start(ctx, id)
 	case lifecycle.ActionRemove:
+		// the worker machine controller removes only a container that does not run (e.g. a PROVISION_FAILED worker
+		// whose container still runs): it is stopped first, gracefully
+		if running {
+			if _, err := c.Stop(ctx, id, stopTimeout); err != nil && !controllerclient.IsNotFound(err) {
+				return nil, controllerapi.RemoveResponse{}, fmt.Errorf("failed to stop the container before removing it: %w", err)
+			}
+		}
 		r, err := c.Remove(ctx, id, removeVolumes)
 		return nil, r, err
 	default:

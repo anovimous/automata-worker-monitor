@@ -70,11 +70,16 @@ var allowed = map[string][]string{
 	Stopped:         {ActionStart, ActionRemove},
 }
 
-// Allowed lists the actions of a lifecycle; start is left out on a cordoned host.
-func Allowed(lc string, cordoned bool) []string {
+// the actions that need a running container: Docker refuses to signal or kill one that is not (e.g. a worker that
+// crashed and stays exited is still ACTIVE); stop and restart work on an exited container too
+var needRunning = map[string]bool{ActionDrain: true, ActionUndrain: true, ActionKill: true}
+
+// Allowed lists the actions of a lifecycle; start is left out on a cordoned host, and the actions that need a running
+// container when it does not run.
+func Allowed(lc string, cordoned, running bool) []string {
 	out := []string{}
 	for _, a := range allowed[lc] {
-		if a == ActionStart && cordoned {
+		if a == ActionStart && cordoned || needRunning[a] && !running {
 			continue
 		}
 		out = append(out, a)
@@ -83,16 +88,19 @@ func Allowed(lc string, cordoned bool) []string {
 }
 
 // Check tells whether an action may run.
-func Check(lc, action string, cordoned bool) error {
+func Check(lc, action string, cordoned, running bool) error {
 	for _, a := range allowed[lc] {
 		if a == action {
 			if a == ActionStart && cordoned {
 				return fmt.Errorf("%w: uncordon the host to start a worker on it", ErrHostCordoned)
 			}
+			if needRunning[a] && !running {
+				break
+			}
 			return nil
 		}
 	}
-	return &TransitionError{Lifecycle: lc, Action: action, Allowed: Allowed(lc, cordoned)}
+	return &TransitionError{Lifecycle: lc, Action: action, Allowed: Allowed(lc, cordoned, running)}
 }
 
 // AfterAction is the lifecycle once an action was sent to the worker machine controller.
