@@ -65,8 +65,9 @@ func TestOpenMigratesAnEmptyDatabaseOnce(t *testing.T) {
 	defer again.Close()
 	var versions int
 	again.db.QueryRowContext(ctx, `SELECT count(*) FROM schema_migrations`).Scan(&versions)
-	if versions != 1 {
-		t.Errorf("migrations recorded = %d, want 1", versions)
+	files, _ := migrations.ReadDir("migrations")
+	if versions != len(files) {
+		t.Errorf("migrations recorded = %d, want one per file (%d)", versions, len(files))
 	}
 	if err := again.Ping(ctx); err != nil {
 		t.Errorf("Ping: %v", err)
