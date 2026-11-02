@@ -584,7 +584,7 @@ func TestTimeseries(t *testing.T) {
 		e.client.set(id, ready(e.later(5*time.Second)))
 		e.poll(5 * time.Second)
 	}
-	ts, err := e.f.WorkerTimeseries(id, []string{"cpu", "memory", "io", "health", "pids"}, "15m")
+	ts, err := e.f.WorkerTimeseries(context.Background(), id, []string{"cpu", "memory", "io", "health", "pids"}, "15m")
 	if err != nil || ts.Source != "buffer" || ts.BucketSeconds != 5 {
 		t.Fatalf("timeseries = %+v, %v", ts, err)
 	}
@@ -599,17 +599,29 @@ func TestTimeseries(t *testing.T) {
 		t.Errorf("cpu = %v health = %v", ts.Series[0].Points, ts.Series[6].Points)
 	}
 
-	hts, err := e.f.HostTimeseries("host1", []string{"cpu", "memory", "load", "disk", "net"}, "1h")
+	hts, err := e.f.HostTimeseries(context.Background(), "host1", []string{"cpu", "memory", "load", "disk", "net"}, "1h")
 	if err != nil || len(hts.Series) != 7 || hts.Series[4].Name != "disk:/host/var/lib/docker" || hts.Series[4].Points[0][1] != 0.6 {
 		t.Errorf("host timeseries = %+v, %v", hts, err)
 	}
 
 	var fe *Error
 	for _, call := range []func() error{
-		func() error { _, err := e.f.WorkerTimeseries(id, []string{"cpu"}, "24h"); return err },
-		func() error { _, err := e.f.WorkerTimeseries(id, []string{"temperature"}, "15m"); return err },
-		func() error { _, err := e.f.WorkerTimeseries("w-nope", []string{"cpu"}, "15m"); return err },
-		func() error { _, err := e.f.HostTimeseries("host9", []string{"cpu"}, "15m"); return err },
+		func() error {
+			_, err := e.f.WorkerTimeseries(context.Background(), id, []string{"cpu"}, "30d")
+			return err
+		},
+		func() error {
+			_, err := e.f.WorkerTimeseries(context.Background(), id, []string{"temperature"}, "15m")
+			return err
+		},
+		func() error {
+			_, err := e.f.WorkerTimeseries(context.Background(), "w-nope", []string{"cpu"}, "15m")
+			return err
+		},
+		func() error {
+			_, err := e.f.HostTimeseries(context.Background(), "host9", []string{"cpu"}, "15m")
+			return err
+		},
 	} {
 		if err := call(); !errors.As(err, &fe) {
 			t.Errorf("err = %v, want an API error", err)

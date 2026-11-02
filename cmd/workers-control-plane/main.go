@@ -133,6 +133,8 @@ func run() int {
 	stopPolling()
 	<-polling
 	fl.Wait()
+	// the minute in progress, merged with the rest of it after the restart
+	fl.FlushHistory(context.Background())
 	return code
 }
 

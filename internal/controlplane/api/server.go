@@ -57,6 +57,8 @@ func NewHandler(d Deps) http.Handler {
 	route("GET /api/v1/overview", s.overview)
 	route("GET /api/v1/config/ui", s.configUI)
 	route("GET /api/v1/events", s.events)
+	route("GET /api/v1/availability", s.availability)
+	route("GET /api/v1/fleet/timeseries", s.fleetTimeseries)
 
 	route("GET /api/v1/hosts", s.hosts)
 	route("GET /api/v1/hosts/{name}", s.host)
@@ -78,6 +80,7 @@ func NewHandler(d Deps) http.Handler {
 	route("POST /api/v1/workers/{id}/actions/{action}", s.action)
 	route("GET /api/v1/workers/{id}/events", s.workerEvents)
 	route("GET /api/v1/workers/{id}/timeseries", s.workerTimeseries)
+	route("GET /api/v1/workers/{id}/availability", s.workerAvailability)
 	route("GET /api/v1/workers/{id}/logs", s.logs)
 
 	route("/api/", func(w http.ResponseWriter, r *http.Request) {
