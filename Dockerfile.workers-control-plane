@@ -1,4 +1,13 @@
-# STAGE 1: BUILDER (the web UI stage comes with P5; until then the binary serves a placeholder page)
+# STAGE 1: the web UI, checked (lint, tests) and built into web/dist
+FROM node:20.20-bookworm-slim AS web
+
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY web/ ./
+RUN npm run lint && npm test && npm run build
+
+# STAGE 2: BUILDER, with the UI embedded (build tag webui)
 FROM golang:1.26 AS builder
 
 ARG VERSION=dev
@@ -9,15 +18,17 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY cmd/ ./cmd/
 COPY internal/ ./internal/
+COPY web/*.go ./web/
+COPY --from=web /web/dist ./web/dist
 
-RUN CGO_ENABLED=0 go build \
+RUN CGO_ENABLED=0 go build -tags webui \
   -ldflags "-X github.com/anovimous/automata-worker-monitor/internal/buildinfo.Version=${VERSION} \
   -X github.com/anovimous/automata-worker-monitor/internal/buildinfo.Commit=${COMMIT}" \
   -o /bin/workers-control-plane ./cmd/workers-control-plane
 # the database directory, owned by the nonroot user so that a new volume gets that owner
 RUN mkdir -p /data/var/lib/automata-monitor
 
-# STAGE 2: RUNNER. Nonroot; pinned by digest: static-debian12:nonroot of 2026-10-30.
+# STAGE 3: RUNNER. Nonroot; pinned by digest: static-debian12:nonroot of 2026-10-30.
 FROM gcr.io/distroless/static-debian12@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
 
 ARG VERSION=dev

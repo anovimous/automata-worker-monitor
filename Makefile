@@ -7,10 +7,14 @@ LDFLAGS   := -X $(BUILDINFO).Version=$(VERSION) -X $(BUILDINFO).Commit=$(COMMIT)
 # the binaries that exist so far; the others are added with their phase
 CMDS := $(notdir $(wildcard cmd/*))
 
-.PHONY: build test vet lint web images test-integration e2e clean
+.PHONY: build build-noweb test vet lint web web-check images test-integration e2e clean
 
-## build: the binaries into bin/
-build:
+## build: the UI, then the binaries into bin/ with the UI embedded (build tag webui)
+build: web
+	CGO_ENABLED=0 go build -tags webui -ldflags "$(LDFLAGS)" -o bin/ ./cmd/...
+
+## build-noweb: the binaries without the UI (no Node needed); the control plane serves a placeholder page
+build-noweb:
 	CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)" -o bin/ ./cmd/...
 
 ## test: unit tests with the race detector
@@ -24,9 +28,13 @@ vet:
 lint:
 	@if command -v staticcheck >/dev/null; then staticcheck ./...; else echo "staticcheck is not installed, skipped"; fi
 
-## web: the UI into web/dist (from P5)
+## web: the UI into web/dist
 web:
 	cd web && npm ci && npm run build
+
+## web-check: lint and unit tests of the UI
+web-check:
+	cd web && npm ci && npm run lint && npm test
 
 ## images: one Docker image per Dockerfile.<binary>
 images: $(addprefix image-,$(CMDS))
@@ -46,4 +54,4 @@ e2e:
 	test/e2e/run.sh
 
 clean:
-	rm -rf bin
+	rm -rf bin web/dist
