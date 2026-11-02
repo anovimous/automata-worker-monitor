@@ -1,0 +1,12 @@
+# The workers control plane of the end-to-end test. The token is the test controller's, not a secret.
+listen: "127.0.0.1:19690"
+database: "/var/lib/automata-monitor/monitor.db"
+hosts:
+  - name: "e2e"
+    workerMachineControllerUrl: "http://127.0.0.1:19680"
+    controlToken: "e2e-token-0123456789abcdef0123456789abcdef"
+    maxWorkers: 60
+health:
+  startingGraceSeconds: 20
+  provisionTimeoutSeconds: 40
+seedTemplates: false

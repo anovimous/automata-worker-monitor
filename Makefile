@@ -7,7 +7,7 @@ LDFLAGS   := -X $(BUILDINFO).Version=$(VERSION) -X $(BUILDINFO).Commit=$(COMMIT)
 # the binaries that exist so far; the others are added with their phase
 CMDS := $(notdir $(wildcard cmd/*))
 
-.PHONY: build build-noweb test vet lint web web-check images test-integration e2e clean
+.PHONY: build build-noweb test vet lint web web-check images test-integration e2e load clean
 
 ## build: the UI, then the binaries into bin/ with the UI embedded (build tag webui)
 build: web
@@ -49,9 +49,13 @@ image-%:
 test-integration:
 	go test -race -tags integration ./...
 
-## e2e: the end-to-end scenarios (from P7)
-e2e:
-	test/e2e/run.sh
+## e2e: the images, then the end-to-end scenarios against them (Docker, curl and jq; about 6 minutes)
+e2e: images
+	E2E_VERSION=$(VERSION) test/e2e/run.sh
+
+## load: the images, then 50 fakeworkers on this host and the CPU/memory of the monitor (about 8 minutes)
+load: images
+	E2E_VERSION=$(VERSION) test/e2e/load.sh
 
 clean:
 	rm -rf bin web/dist
