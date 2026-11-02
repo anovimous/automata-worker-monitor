@@ -7,3 +7,4 @@ web/dist
 deploy/**/secrets
 deploy/**/*.env
 deploy/**/tls/
+deploy/**/config.yml
