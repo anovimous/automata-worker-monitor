@@ -405,10 +405,45 @@ func TestTimeseriesRoutes(t *testing.T) {
 	if all := decodeBody[fleet.Timeseries](t, e.do("GET", "/api/v1/hosts/host1/timeseries", "")); len(all.Series) < 5 {
 		t.Errorf("host timeseries = %+v", all)
 	}
-	for _, q := range []string{"?range=24h", "?series=temperature"} {
+	for _, q := range []string{"?range=30d", "?series=temperature"} {
 		if rec := e.do("GET", "/api/v1/workers/"+id+"/timeseries"+q, ""); rec.Code != 400 {
 			t.Errorf("timeseries%s = %d", q, rec.Code)
 		}
+	}
+	if long := decodeBody[fleet.Timeseries](t, e.do("GET", "/api/v1/workers/"+id+"/timeseries?series=health&range=24h", "")); long.Source != "samples" || long.BucketSeconds != 300 {
+		t.Errorf("24h timeseries = %+v", long)
+	}
+}
+
+func TestHistoryRoutes(t *testing.T) {
+	e := newEnv(t)
+	id := e.createOne()
+	for range 13 {
+		e.poll()
+	}
+	a := decodeBody[fleet.Availability](t, e.do("GET", "/api/v1/workers/"+id+"/availability?range=24h", ""))
+	if a.Polls == 0 || a.Availability == nil {
+		t.Errorf("availability = %+v", a)
+	}
+	all := decodeBody[struct {
+		Range   string                        `json:"range"`
+		Workers map[string]fleet.Availability `json:"workers"`
+	}](t, e.do("GET", "/api/v1/availability", ""))
+	if all.Range != "24h" || all.Workers[id].Polls != a.Polls {
+		t.Errorf("fleet availability = %+v", all)
+	}
+	ts := decodeBody[fleet.Timeseries](t, e.do("GET", "/api/v1/fleet/timeseries?series=capacity&range=6h", ""))
+	if ts.Source != "samples" || len(ts.Series) != 3 || ts.Series[0].Name != "active" {
+		t.Errorf("fleet timeseries = %+v", ts)
+	}
+	for _, path := range []string{"/api/v1/workers/" + id + "/availability?range=1h", "/api/v1/availability?range=14d",
+		"/api/v1/fleet/timeseries?series=cpu"} {
+		if rec := e.do("GET", path, ""); rec.Code != 400 {
+			t.Errorf("%s = %d, want 400", path, rec.Code)
+		}
+	}
+	if rec := e.do("GET", "/api/v1/workers/w-nope/availability", ""); rec.Code != 404 {
+		t.Errorf("availability of an unknown worker = %d", rec.Code)
 	}
 }
 

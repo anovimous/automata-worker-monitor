@@ -12,6 +12,7 @@ import (
 
 	"github.com/anovimous/automata-worker-monitor/internal/controllerapi"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/health"
+	"github.com/anovimous/automata-worker-monitor/internal/controlplane/history"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/lifecycle"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/store"
 	"github.com/anovimous/automata-worker-monitor/internal/workerapi"
@@ -27,6 +28,7 @@ func (f *Fleet) ApplySnapshot(ctx context.Context, hostName string, snap control
 		return
 	}
 	now := f.now()
+	f.rollover(ctx, now)
 	h.reachable, h.downSince = true, time.Time{}
 	h.lastSeen = &now
 	host := snap.Host
@@ -38,7 +40,9 @@ func (f *Fleet) ApplySnapshot(ctx context.Context, hostName string, snap control
 		}
 		h.persistedSeen = now
 	}
-	h.ring.Add(hostPoint(now, host, true))
+	point := hostPoint(now, host, true)
+	h.ring.Add(point)
+	f.acc.Host(hostName, now, hostPoll(point))
 
 	byID := map[string]*controllerapi.WorkerObservation{}
 	for i := range snap.Workers {
@@ -69,6 +73,7 @@ func (f *Fleet) HostDown(ctx context.Context, hostName string, err error) {
 		return
 	}
 	now := f.now()
+	f.rollover(ctx, now)
 	if h.reachable || h.downSince.IsZero() {
 		log.Warn("a worker machine controller does not answer", "host", hostName, "error", err)
 		// unreachable since the last snapshot it gave, not since this poll: the threshold counts from there
@@ -79,12 +84,14 @@ func (f *Fleet) HostDown(ctx context.Context, hostName string, err error) {
 	}
 	h.reachable = false
 	h.ring.Add(HostPoint{T: now})
+	f.acc.Host(hostName, now, history.HostPoll{})
 	for _, w := range f.workers {
 		if w.row.Host != hostName {
 			continue
 		}
 		f.applyHealth(ctx, w, health.Input{Now: now, Lifecycle: w.row.Lifecycle, ControllerDownSince: h.downSince,
 			Observation: w.obs, Previous: w.res}, now)
+		f.sample(w, nil, now)
 		f.publishWorker(w)
 	}
 	f.publishHost(h)
@@ -183,6 +190,7 @@ func (f *Fleet) observe(ctx context.Context, w *worker, o *controllerapi.WorkerO
 	if o != nil && o.Resources != nil {
 		w.ring.Add(workerPoint(now, w, o))
 	}
+	f.sample(w, o, now)
 	f.publishWorker(w)
 }
 

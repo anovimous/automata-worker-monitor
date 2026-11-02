@@ -149,7 +149,7 @@ func (s *server) hostTimeseries(w http.ResponseWriter, r *http.Request) {
 	if len(series) == 0 {
 		series = fleet.HostSeriesNames
 	}
-	ts, err := s.Fleet.HostTimeseries(r.PathValue("name"), series, or(r.URL.Query().Get("range"), "15m"))
+	ts, err := s.Fleet.HostTimeseries(r.Context(), r.PathValue("name"), series, or(r.URL.Query().Get("range"), "15m"))
 	if err != nil {
 		writeErr(w, err)
 		return
@@ -426,7 +426,40 @@ func (s *server) workerTimeseries(w http.ResponseWriter, r *http.Request) {
 	if len(series) == 0 {
 		series = fleet.WorkerSeriesNames
 	}
-	ts, err := s.Fleet.WorkerTimeseries(r.PathValue("id"), series, or(r.URL.Query().Get("range"), "15m"))
+	ts, err := s.Fleet.WorkerTimeseries(r.Context(), r.PathValue("id"), series, or(r.URL.Query().Get("range"), "15m"))
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, ts)
+}
+
+func (s *server) workerAvailability(w http.ResponseWriter, r *http.Request) {
+	a, err := s.Fleet.WorkerAvailability(r.Context(), r.PathValue("id"), or(r.URL.Query().Get("range"), "24h"))
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, a)
+}
+
+// availability is the availability of every worker with history, for the column of the fleet table.
+func (s *server) availability(w http.ResponseWriter, r *http.Request) {
+	rng := or(r.URL.Query().Get("range"), "24h")
+	a, err := s.Fleet.FleetAvailability(r.Context(), rng)
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"range": rng, "workers": a})
+}
+
+func (s *server) fleetTimeseries(w http.ResponseWriter, r *http.Request) {
+	series := seriesOf(r)
+	if len(series) == 0 {
+		series = fleet.FleetSeriesNames
+	}
+	ts, err := s.Fleet.FleetTimeseries(r.Context(), series, or(r.URL.Query().Get("range"), "24h"))
 	if err != nil {
 		writeErr(w, err)
 		return

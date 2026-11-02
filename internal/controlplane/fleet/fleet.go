@@ -18,6 +18,7 @@ import (
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/config"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/controllerclient"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/health"
+	"github.com/anovimous/automata-worker-monitor/internal/controlplane/history"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/lifecycle"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/ringbuf"
 	"github.com/anovimous/automata-worker-monitor/internal/controlplane/sse"
@@ -50,6 +51,9 @@ type Fleet struct {
 	broker  *sse.Broker
 	now     func() time.Time
 	random  io.Reader
+	// the minute in progress of the history, and when the control plane started (the live buffer covers from there)
+	acc     *history.Accumulator
+	started time.Time
 
 	mu      sync.Mutex
 	workers map[string]*worker
@@ -133,7 +137,7 @@ type DiskPoint struct {
 
 func New(cfg config.Config, st *store.Store, clients map[string]Client, broker *sse.Broker, now func() time.Time) *Fleet {
 	return &Fleet{cfg: cfg, store: st, clients: clients, broker: broker, now: now, random: rand.Reader,
-		workers: map[string]*worker{}, hosts: map[string]*host{}, locks: map[string]*sync.Mutex{}}
+		acc: history.New(), started: now(), workers: map[string]*worker{}, hosts: map[string]*host{}, locks: map[string]*sync.Mutex{}}
 }
 
 // Load reads the hosts and the workers of the store, so that the picture is there before the first poll.
