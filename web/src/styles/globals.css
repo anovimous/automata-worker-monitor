@@ -1,0 +1,150 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light theme — near-white with cool neutrals, single sharp accent. */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+
+    --primary: 240 6% 10%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 240 10% 8%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 240 6% 10%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Dark theme — Linear-flavored: deep neutral, not pure black. */
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 8% 6%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 8% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 6% 10%;
+
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 4% 60%;
+
+    --accent: 240 5% 14%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 65% 48%;
+    --success-foreground: 240 10% 4%;
+
+    --warning: 38 92% 55%;
+    --warning-foreground: 240 10% 4%;
+
+    --border: 240 5% 14%;
+    --input: 240 5% 14%;
+    --ring: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Tighter, more refined defaults */
+  h1, h2, h3, h4 {
+    @apply tracking-tight;
+  }
+
+  /* Custom scrollbars — restrained */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
+  }
+
+  /* Focus ring — subtle, square-ish */
+  :focus-visible {
+    @apply outline-none ring-1 ring-ring ring-offset-0;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-foreground/20;
+  }
+}
+
+@layer utilities {
+  /* Dense data-table rows */
+  .row-dense > * {
+    @apply h-9;
+  }
+
+  /* Hairline divider, top + bottom — Linear-ish */
+  .hairline-y {
+    @apply border-y border-border;
+  }
+
+  /* Subtle inner grid background — used on dashboard cards */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+}
