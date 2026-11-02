@@ -1,0 +1,37 @@
+# The stack of the end-to-end test (test/e2e/run.sh): one worker machine controller and the workers control plane,
+# from the images of `make images`. Both use host networking on their own ports (19680, 19690) and the host name e2e,
+# so that the test's workers (w-e2e-…) never mix with the workers of another stack on this machine.
+name: amon-e2e
+services:
+  worker-machine-controller:
+    image: automata-worker-machine-controller:${E2E_VERSION:-dev}
+    container_name: amon-e2e-worker-machine-controller
+    network_mode: host
+    pid: host
+    environment:
+      WORKER_MACHINE_CONTROLLER_TOKEN: e2e-token-0123456789abcdef0123456789abcdef
+      WORKER_MACHINE_CONTROLLER_HOST_NAME: e2e
+      WORKER_MACHINE_CONTROLLER_LISTEN_ADDR: 127.0.0.1:19680
+      WORKER_MACHINE_CONTROLLER_ALLOWED_IMAGES: automata-fakeworker:*
+      WORKER_MACHINE_CONTROLLER_HOST_PORT_RANGE: 19700-19799
+      LOG_FORMAT: json
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro,rslave
+      - ./env:/etc/automata-worker-machine-controller/env:ro
+
+  workers-control-plane:
+    image: automata-workers-control-plane:${E2E_VERSION:-dev}
+    container_name: amon-e2e-workers-control-plane
+    network_mode: host
+    environment:
+      MONITOR_CONFIG: /etc/automata-monitor/config.yml
+      LOG_FORMAT: json
+    volumes:
+      - ./config.yml:/etc/automata-monitor/config.yml:ro
+      - data:/var/lib/automata-monitor
+
+volumes:
+  data: {}
