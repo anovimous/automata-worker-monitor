@@ -85,8 +85,13 @@ Open the UI → **Templates → New template**:
 
 - **Image**: the worker image with its tag (e.g. `automata-worker:0.4.0`; `latest` is refused).
 - **Env file**: `default` (the file of step 2).
-- **Network**: on the machine of the core's compose stack, the core's network (`automata_backend`) so the env file
-  can use the service names (`rabbitmq`, `rustfs`, `app`); elsewhere a network of your own, or `host`.
+- **Network**: `host` (the default, like the worker's own compose file): the workers use the machine's network and
+  the env file reaches the core through the ports it publishes (`localhost:5672`, `localhost:9000`,
+  `http://localhost:8080`, or the core machine's address from another host); the worker machine controller gives
+  each worker its own telemetry port (19100–19199). Alternatives: the core's compose network (`automata_backend`,
+  it must exist, i.e. the core's stack is up), where the env file uses the service names (`rabbitmq:5672`,
+  `rustfs:9000`, `http://app:8080`); or a network of your own named `automata-…` (created when missing) with the
+  extra host `host.docker.internal:host-gateway`. The network and the addresses in the env file go together.
 - **CPUs, memory, pids, wordlist cache size**: the limits of each worker (each worker has its own cache volume).
 - **Drain timeout**: 0 waits for the job however long it takes; with a timeout the template can stop the worker
   after it, or remove it after the drain.

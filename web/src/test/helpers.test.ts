@@ -107,6 +107,9 @@ describe("templates", () => {
     expect(Object.keys(input).sort()).toEqual(Object.keys(emptyTemplate()).sort());
     expect(input.name).toBe("a");
   });
+  it("starts a new template on the host network", () => {
+    expect(emptyTemplate().network).toBe("host");
+  });
   it("spots secrets and bad images", () => {
     expect(looksSecret("RABBITMQ_PASSWORD")).toBe(true);
     expect(looksSecret("api_key")).toBe(true);

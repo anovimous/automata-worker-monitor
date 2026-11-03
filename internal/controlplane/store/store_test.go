@@ -292,3 +292,10 @@ func TestPurge(t *testing.T) {
 		t.Errorf("workers left = %d, want 2", len(list))
 	}
 }
+
+func TestTheDefaultTemplateUsesTheHostNetwork(t *testing.T) {
+	// like the worker's own compose file: the env file reaches the core through its published ports
+	if d := DefaultTemplate(); d.Network != "host" || d.EnvFile != "default" {
+		t.Errorf("default template network %q env file %q, want host and default", d.Network, d.EnvFile)
+	}
+}
