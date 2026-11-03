@@ -157,12 +157,13 @@ func (s *Store) Templates(ctx context.Context) ([]Template, error) {
 	return out, rows.Err()
 }
 
-// DefaultTemplate is the template seeded on the first start.
+// DefaultTemplate is the template seeded on the first start. It uses the host network, like the worker's own compose
+// file: the env file then reaches the core's services through the ports they publish (localhost:5672, …).
 func DefaultTemplate() Template {
 	return Template{
 		Name: "default", Description: "Seeded on the first start; edit it to your image and network.",
 		Image: "automata-worker:0.4.0", PullPolicy: "if-missing", EnvFile: "default", Env: map[string]string{},
-		Network: "automata_backend", ExtraHosts: []string{}, CPUs: 2, MemoryBytes: 4 << 30, PidsLimit: 512,
+		Network: "host", ExtraHosts: []string{}, CPUs: 2, MemoryBytes: 4 << 30, PidsLimit: 512,
 		WordlistCacheMaxBytes: 1610612736, TmpfsSocketsBytes: 16 << 20, RestartMaxRetries: 5, StopTimeoutSeconds: 60,
 		ExtraLabels: map[string]string{},
 	}

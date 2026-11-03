@@ -51,7 +51,7 @@ export function emptyTemplate(): TemplateInput {
     pullPolicy: "if-missing",
     envFile: "default",
     env: {},
-    network: "automata_backend",
+    network: "host",
     extraHosts: [],
     cpus: 2,
     memoryBytes: 4 * 1024 ** 3,
