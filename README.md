@@ -24,10 +24,24 @@ browser ─► workers-control-plane      Go, SQLite, embedded React UI, REST + 
            worker containers          telemetry on TELEMETRY_ADDR: /healthz, /status
 ```
 
-## Install
+## Deploy
 
-See [deploy/README.md](deploy/README.md): the images, a worker machine controller per host, the workers control plane,
-the first template, upgrades.
+This is how you get workers that take jobs from the [Automata core](https://github.com/anovimous/automata): the core
+starts no worker, and queued jobs are not executed until one is running. You need Docker and Docker Compose, Linux with
+cgroup v2 on the worker hosts, and a running core that the worker hosts can reach (RabbitMQ `5672`, RustFS `9000`, API
+`8080`). In short:
+
+1. **Build the worker image** (`automata-worker:<tag>`) from the [automata-worker](https://github.com/anovimous/automata-worker)
+   repository, on every worker host or once and copied.
+2. **Build the monitor images** here: `make images VERSION=0.1.0`.
+3. **Install a worker machine controller on each worker host**: `deploy/worker-machine-controller`, with a token, the
+   host name and `env/default.env`, the credentials the workers use to reach the core.
+4. **Install the workers control plane** once: `deploy/workers-control-plane`, with the address and token of each worker
+   machine controller. Its UI is at `http://127.0.0.1:9490` (there is no login: keep it on loopback or behind a proxy).
+5. **Create a template and the workers** in the UI (**Templates → New template**, then **Fleet → New worker**), and check
+   that they become `HEALTHY`.
+
+The details of every step, the settings, upgrades, token changes and backup are in [deploy/README.md](deploy/README.md).
 
 ## Try it with fakeworkers
 
