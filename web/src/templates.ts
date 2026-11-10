@@ -38,7 +38,7 @@ export function imageProblem(image: string): string | null {
   if (!s) return "The image is required.";
   if (s.includes("@")) return null;
   const last = s.slice(s.lastIndexOf("/") + 1);
-  if (!last.includes(":")) return "The image needs a tag (e.g. automata-worker:0.4.0).";
+  if (!last.includes(":")) return "The image needs a tag (e.g. automata-worker:0.10.0).";
   if (last.endsWith(":latest")) return "The tag latest is refused: name the version.";
   return null;
 }

@@ -78,7 +78,7 @@ type ContainerSummary struct {
 type ContainerInfo struct {
 	ID           string
 	Name         string
-	Image        string // as given at creation, e.g. automata-worker:0.4.0
+	Image        string // as given at creation, e.g. automata-worker:0.10.0
 	ImageID      string
 	Created      time.Time
 	State        string // created, running, paused, restarting, removing, exited, dead

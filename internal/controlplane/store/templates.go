@@ -162,7 +162,7 @@ func (s *Store) Templates(ctx context.Context) ([]Template, error) {
 func DefaultTemplate() Template {
 	return Template{
 		Name: "default", Description: "Seeded on the first start; edit it to your image and network.",
-		Image: "automata-worker:0.4.0", PullPolicy: "if-missing", EnvFile: "default", Env: map[string]string{},
+		Image: "automata-worker:0.10.0", PullPolicy: "if-missing", EnvFile: "default", Env: map[string]string{},
 		Network: "host", ExtraHosts: []string{}, CPUs: 2, MemoryBytes: 4 << 30, PidsLimit: 512,
 		WordlistCacheMaxBytes: 1610612736, TmpfsSocketsBytes: 16 << 20, RestartMaxRetries: 5, StopTimeoutSeconds: 60,
 		ExtraLabels: map[string]string{},

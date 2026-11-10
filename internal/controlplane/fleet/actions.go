@@ -393,7 +393,7 @@ func ValidateTemplate(t store.Template) error {
 		return errorf(http.StatusBadRequest, "INVALID", "%s", strings.ReplaceAll(err.Message, "template.", ""))
 	}
 	if !hasTag(t.Image) {
-		return errorf(http.StatusBadRequest, "INVALID", "image must name a tag other than latest (e.g. automata-worker:0.4.0)")
+		return errorf(http.StatusBadRequest, "INVALID", "image must name a tag other than latest (e.g. automata-worker:0.10.0)")
 	}
 	if t.DrainTimeoutSeconds < 0 || t.RestartMaxRetries < 0 {
 		return errorf(http.StatusBadRequest, "INVALID", "drainTimeoutSeconds and restartMaxRetries must not be negative")

@@ -85,7 +85,7 @@ func newEnv(t *testing.T) *env {
 	envDir := t.TempDir()
 	os.WriteFile(filepath.Join(envDir, "default.env"), []byte("RABBITMQ_URL=amqp://u:secret@h/\n"), 0o600)
 	e.docker = docker.NewFake()
-	e.docker.AddImage("automata-worker:0.4.0")
+	e.docker.AddImage(store.DefaultTemplate().Image) // the image the seeded default template names
 	e.docker.AddNetwork("automata_backend")
 	disc := discovery.New(e.docker)
 	prov := provision.New(e.docker, mcconfig.Config{EnvDir: envDir, AllowedImages: []string{"automata-worker:*"}}, onePort{}, disc, e.now)
