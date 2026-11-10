@@ -124,7 +124,7 @@ Open the UI (`http://127.0.0.1:9490`) → **Templates → New template**. A temp
 | **CPUs, memory, pids, wordlist cache size** | The limits of each worker (each worker has its own cache volume). |
 | **Drain timeout** | `0` waits for the job however long it takes. With a timeout, the template can stop the worker after it, or remove it after the drain. |
 
-The first start of the control plane seeds a template named `default` (`seedTemplates: true` in `config.yml`) with an example image tag. Edit it and set its image to the tag you built in step 1 (`automata-worker:0.10.0`), or make a new template.
+The first start of the control plane seeds a template named `default` for `automata-worker:0.10.0` (`seedTemplates: true` in `config.yml`); edit it instead of making a new one if it suits you. If you built the image with another tag in step 1, set that tag in the template.
 
 Then **Fleet → New worker**: choose the host, the template and how many workers. Each worker takes one job at a time, so more workers run more jobs in parallel.
 
