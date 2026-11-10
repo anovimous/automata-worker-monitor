@@ -182,6 +182,21 @@ func TestSeedDefaultOnlyOnAnEmptyTable(t *testing.T) {
 	}
 }
 
+func TestSeedDefaultUsesTheCurrentWorkerImage(t *testing.T) {
+	s, _ := openTemp(t)
+	ctx := context.Background()
+	if err := s.SeedDefault(ctx, t0); err != nil {
+		t.Fatal(err)
+	}
+	list, err := s.Templates(ctx)
+	if err != nil || len(list) != 1 {
+		t.Fatalf("templates = %d, err %v, want 1", len(list), err)
+	}
+	if list[0].Name != "default" || list[0].Image != "automata-worker:0.10.0" {
+		t.Errorf("seeded template = %q with image %q, want default with automata-worker:0.10.0", list[0].Name, list[0].Image)
+	}
+}
+
 func worker(id string) Worker {
 	return Worker{ID: id, Host: "host1", Managed: true, Lifecycle: "PROVISIONING", LifecycleSince: t0, Health: "UNKNOWN",
 		HealthReasons: []string{}, HealthSince: t0, CreatedAt: t0, TemplateSnapshot: json.RawMessage(`{"name":"default"}`)}
