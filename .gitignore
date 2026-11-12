@@ -1,1 +1,11 @@
 .claude
+/bin
+web/node_modules
+web/dist
+*.db
+.env
+deploy/**/secrets
+deploy/**/*.env
+deploy/**/tls/
+deploy/**/config.yml
+/plan

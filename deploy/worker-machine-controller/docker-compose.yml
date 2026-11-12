@@ -1,0 +1,22 @@
+# The worker machine controller of one Docker host.
+# Before the first start:
+#   cp worker-machine-controller.env.example worker-machine-controller.env   # then set the token and the host name
+#   cp env/default.env.example env/default.env && chmod 600 env/*.env           # the credentials of the workers
+services:
+  worker-machine-controller:
+    image: automata-worker-machine-controller:${MONITOR_VERSION:?set MONITOR_VERSION, e.g. 0.1.0}
+    container_name: automata-worker-machine-controller
+    restart: unless-stopped
+    # reaches the bridge IPs and the 127.0.0.1 telemetry ports of the workers
+    network_mode: host
+    # host process counts for the host metrics
+    pid: host
+    env_file: ./worker-machine-controller.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro,rslave
+      # the env files of the worker templates (RabbitMQ and RustFS credentials); their values never leave the host
+      - ./env:/etc/automata-worker-machine-controller/env:ro
+      - ./tls:/etc/automata-worker-machine-controller/tls:ro

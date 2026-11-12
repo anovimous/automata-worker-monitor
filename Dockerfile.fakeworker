@@ -1,0 +1,32 @@
+# STAGE 1: BUILDER
+FROM golang:1.26 AS builder
+
+ARG VERSION=dev
+ARG COMMIT=unknown
+
+WORKDIR /build
+COPY go.mod go.sum ./
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
+
+RUN CGO_ENABLED=0 go build \
+  -ldflags "-X github.com/anovimous/automata-worker-monitor/internal/buildinfo.Version=${VERSION} \
+  -X github.com/anovimous/automata-worker-monitor/internal/buildinfo.Commit=${COMMIT}" \
+  -o /bin/fakeworker ./cmd/fakeworker
+
+# STAGE 2: RUNNER, laid out like the worker image (tini forwards the signals to the process only, no -g)
+FROM debian:12-slim
+
+ARG VERSION=dev
+ARG COMMIT=unknown
+LABEL org.opencontainers.image.version=${VERSION} \
+      org.opencontainers.image.revision=${COMMIT} \
+      org.opencontainers.image.source=https://github.com/anovimous/automata-worker-monitor
+
+RUN apt-get update && apt-get install -y --no-install-recommends tini && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /bin/fakeworker /usr/local/bin/fakeworker
+
+HEALTHCHECK --interval=15s --timeout=5s --start-period=60s --retries=3 CMD ["/usr/local/bin/fakeworker", "healthcheck"]
+
+ENTRYPOINT ["/usr/bin/tini", "--", "fakeworker"]
