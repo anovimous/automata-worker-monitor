@@ -13,7 +13,7 @@ import (
 
 type scenario string
 
-// The scenarios of plan/11 P0, chosen with FAKE_SCENARIO.
+// The scenarios of the fakeworker, chosen with FAKE_SCENARIO.
 const (
 	scenarioNormal          scenario = "normal"
 	scenarioStuck           scenario = "stuck"            // stops touching progress after the first job starts

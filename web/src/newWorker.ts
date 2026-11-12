@@ -1,4 +1,4 @@
-// The checks of the new-worker dialog (plan/08 §3.5), without the DOM so that they can be tested.
+// The checks of the new-worker dialog, without the DOM so that they can be tested.
 import { bytes } from "@/format";
 import type { HostView, Template } from "@/types";
 

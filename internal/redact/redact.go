@@ -1,5 +1,5 @@
 // Package redact masks credentials in log lines and error strings before the monitor shows them. It follows the
-// worker's own rules (plan/05 §3.4) without the length cut, and adds the command-line forms the connectors log
+// worker's own rules without the length cut, and adds the command-line forms the connectors log
 // (curl-like -H 'Authorization: …' and -b 'cookie…'). It masks too much rather than too little.
 package redact
 

@@ -1,4 +1,4 @@
-// Package store keeps the registry of the workers control plane in SQLite (plan/07-workers-control-plane.md §2):
+// Package store keeps the registry of the workers control plane in SQLite:
 // the state of the hosts, the templates, the workers and their events. Docker labels stay the truth of which
 // containers exist; the store holds what the operator asked for and what was seen.
 package store

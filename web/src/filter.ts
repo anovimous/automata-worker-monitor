@@ -1,4 +1,4 @@
-// The filters of the workers table, the same as the API's ?host=&health=&lifecycle=&phase=&routine=&q= (plan/07 §7),
+// The filters of the workers table, the same as the API's ?host=&health=&lifecycle=&phase=&routine=&q=,
 // kept in the URL.
 import type { WorkerView } from "@/types";
 

@@ -1,5 +1,5 @@
 // Package workerapi holds the Go types of the telemetry contract between a worker and the monitor
-// (plan/05-telemetry-contract.md): the status document served on GET /status and the container labels.
+// (automata-worker docs/telemetry-contract.md): the status document served on GET /status and the container labels.
 // The samples in contracts/ are the reference; the tests parse them.
 package workerapi
 

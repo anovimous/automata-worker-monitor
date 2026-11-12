@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// WorkerSample is one minute of a worker (plan/09 §1.2).
+// WorkerSample is one minute of a worker.
 type WorkerSample struct {
 	WorkerID        string
 	Minute          int64 // unix seconds, floored to 60

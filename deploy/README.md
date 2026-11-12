@@ -163,4 +163,4 @@ Between the two restarts the control plane gets `401` from that host: its worker
 | worker machine controller | 1.34 % / 4.41 % | 16.0 MiB / 17.5 MiB |
 | workers control plane | 0.20 % / 1.36 % | 15.5 MiB / 17.4 MiB |
 
-The budget of plan/02 §4 for the worker machine controller with 50 workers is under 2 % of one core and under 100 MB: met on average; single samples go higher for a moment (the volume sizes are read every 60 s).
+The budget for the worker machine controller with 50 workers is under 2 % of one core and under 100 MB: met on average; single samples go higher for a moment (the volume sizes are read every 60 s).

@@ -1,4 +1,4 @@
-// The actions of a worker and their confirmations (plan/08 §4, the exact meaning matters). Which actions a worker
+// The actions of a worker and their confirmations (the exact meaning matters). Which actions a worker
 // allows comes from the control plane (WorkerView.allowedActions); the menu only orders and labels them.
 import type { Action, WorkerView } from "@/types";
 

@@ -1,4 +1,4 @@
-// The JSON of the workers control plane API (plan/07 §7), kept by hand in step with the Go types of
+// The JSON of the workers control plane API, kept by hand in step with the Go types of
 // internal/controlplane/fleet, internal/controlplane/store and internal/controllerapi.
 
 export type Health = "HEALTHY" | "DEGRADED" | "STUCK" | "UNRESPONSIVE" | "DOWN" | "STARTING" | "UNKNOWN" | "NONE";

@@ -28,7 +28,7 @@ export function useAction(w: WorkerView) {
   });
 }
 
-// ConfirmDialog asks before an action, with the text of plan/08 §4 and the options of the action.
+// ConfirmDialog asks before an action, with the text of its confirmation and the options of the action.
 export function ConfirmDialog({
   worker,
   action,

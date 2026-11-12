@@ -1,4 +1,4 @@
-// How health and lifecycle are shown (plan/08 §2).
+// How health and lifecycle are shown.
 import {
   CircleCheck,
   CircleHelp,
@@ -43,7 +43,7 @@ export function isProblem(h: Health): boolean {
   return h !== "HEALTHY" && h !== "NONE" && h !== "STARTING";
 }
 
-// One sentence per reason code (plan/07 §4). The health message of the worker view carries the numbers; these explain
+// One sentence per reason code. The health message of the worker view carries the numbers; these explain
 // the codes in the badge tooltip.
 const reasonTexts: Record<string, string> = {
   WORKER_MACHINE_CONTROLLER_UNREACHABLE: "The worker machine controller of the host does not answer; the worker may be fine.",

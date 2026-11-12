@@ -17,7 +17,7 @@ type Series struct {
 	Points [][]any `json:"points"`
 }
 
-// Timeseries is the answer of the timeseries routes (plan/07 §8, plan/09 §1.4).
+// Timeseries is the answer of the timeseries routes.
 type Timeseries struct {
 	Source        string   `json:"source"` // buffer (the 5 s points) or samples (the minute samples)
 	BucketSeconds int      `json:"bucketSeconds"`

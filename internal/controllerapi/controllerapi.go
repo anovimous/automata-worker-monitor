@@ -1,5 +1,5 @@
-// Package controllerapi holds the request and response types of the worker machine controller's API
-// (plan/06-worker-machine-controller.md §3), shared by the worker machine controller and the workers control plane.
+// Package controllerapi holds the request and response types of the worker machine controller's API, shared by the
+// worker machine controller and the workers control plane.
 // The samples contracts/worker-machine-controller-*.sample.json are the reference; the tests round-trip them.
 package controllerapi
 
@@ -128,7 +128,7 @@ type Limits struct {
 	Pids        *int64   `json:"pids"`
 }
 
-// Resources is the latest Docker stats sample of a running container (plan/06 §4). The network fields are null in
+// Resources is the latest Docker stats sample of a running container. The network fields are null in
 // host network mode.
 type Resources struct {
 	SampledAt                time.Time `json:"sampledAt"`

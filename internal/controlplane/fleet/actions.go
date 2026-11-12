@@ -54,7 +54,7 @@ type ActionResult struct {
 	Warnings []string   `json:"warnings"`
 }
 
-// Act runs an action on a worker (plan/07 §5). The lifecycle moves first, so that a poll during a long call (a stop
+// Act runs an action on a worker. The lifecycle moves first, so that a poll during a long call (a stop
 // waits for the worker to report its job) sees what was asked for; a failed call puts it back.
 func (f *Fleet) Act(ctx context.Context, id, action string, opts ActionOptions) (ActionResult, error) {
 	unlock := f.lock(id)
@@ -203,7 +203,7 @@ type CreateResult struct {
 	Warnings []string        `json:"warnings"`
 }
 
-// Create provisions count workers of a template on a host, one after the other (plan/07 §6).
+// Create provisions count workers of a template on a host, one after the other.
 func (f *Fleet) Create(ctx context.Context, hostName string, templateID int64, count int) (CreateResult, error) {
 	f.createMu.Lock()
 	defer f.createMu.Unlock()

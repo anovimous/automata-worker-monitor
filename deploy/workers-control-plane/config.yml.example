@@ -1,4 +1,4 @@
-# The configuration of the workers control plane (plan/07-workers-control-plane.md §1). ${NAME} is taken from the
+# The configuration of the workers control plane. ${NAME} is taken from the
 # env var NAME (workers-control-plane.env). Every key below has this default when left out, except hosts.
 listen: "127.0.0.1:9490"
 tls: {cert: "", key: ""}

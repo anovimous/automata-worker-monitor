@@ -18,7 +18,7 @@ type statusSource interface {
 	health() (ok bool, progressAge time.Duration, phase workerapi.Phase)
 }
 
-// server is the telemetry server of plan/05 §2.
+// server is the telemetry server of the telemetry contract (GET /healthz and GET /status).
 type server struct {
 	addr string
 	srv  *http.Server

@@ -1,6 +1,6 @@
 // worker-machine-controller runs on every Docker host of the workers: it creates and controls the worker containers,
-// watches them (Docker state, stats, the workers' own status) and serves all of it to the workers control plane
-// (plan/06-worker-machine-controller.md). It keeps no state: Docker is the truth.
+// watches them (Docker state, stats, the workers' own status) and serves all of it to the workers control plane. It
+// keeps no state: Docker is the truth.
 package main
 
 import (

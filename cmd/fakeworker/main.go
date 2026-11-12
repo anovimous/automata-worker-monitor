@@ -1,5 +1,5 @@
 // fakeworker stands in for the orchestrator of automata-worker in tests and UI work: it implements the telemetry
-// contract (plan/05) with scripted scenarios and takes no real job.
+// contract with scripted scenarios and takes no real job.
 package main
 
 import (

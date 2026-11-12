@@ -1,6 +1,6 @@
 package workerapi
 
-// Labels of a worker container (plan/05 §6).
+// Labels of a worker container.
 const (
 	LabelID            = "automata.worker.id"
 	LabelManagedBy     = "automata.worker.managed-by"

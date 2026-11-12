@@ -1,4 +1,4 @@
-// Package api is the REST and SSE API of the workers control plane for its UI (plan/07-workers-control-plane.md §7),
+// Package api is the REST and SSE API of the workers control plane for its UI,
 // and serves the UI itself. There is no login (O3 rejected): anyone who reaches the control plane can run every
 // action. The one protection kept is the Origin check, against the other web pages open in the operator's browser.
 package api
