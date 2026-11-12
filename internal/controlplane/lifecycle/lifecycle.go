@@ -1,6 +1,5 @@
-// Package lifecycle is the state machine of what the operator asked for and how far it got
-// (plan/07-workers-control-plane.md §5). It is kept apart from the health on purpose: a worker can be ACTIVE (wanted
-// running) and DOWN (crashed).
+// Package lifecycle is the state machine of what the operator asked for and how far it got. It is kept apart from the
+// health on purpose: a worker can be ACTIVE (wanted running) and DOWN (crashed).
 package lifecycle
 
 import (

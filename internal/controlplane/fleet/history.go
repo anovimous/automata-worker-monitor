@@ -91,7 +91,7 @@ func (f *Fleet) knownWorker(ctx context.Context, id string) (bool, error) {
 	return f.store.HasWorkerSamples(ctx, id)
 }
 
-// Availability is how a worker was over a range (plan/09 §1.5), from its minute samples.
+// Availability is how a worker was over a range, from its minute samples.
 type Availability struct {
 	Polls int64 `json:"polls"`
 	// responsive polls / polls and busy polls / polls; null without polls

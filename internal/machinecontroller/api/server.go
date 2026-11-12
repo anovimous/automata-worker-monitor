@@ -1,4 +1,4 @@
-// Package api is the HTTP API of the worker machine controller (plan/06-worker-machine-controller.md §3). Its only
+// Package api is the HTTP API of the worker machine controller. Its only
 // caller is the workers control plane, authenticated by a bearer token. There is no generic Docker route: only the
 // worker actions below, and signals limited to drain and undrain.
 package api

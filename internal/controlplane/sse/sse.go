@@ -1,4 +1,4 @@
-// Package sse pushes the changes of the fleet to the browsers as Server-Sent Events (plan/07 §7.2).
+// Package sse pushes the changes of the fleet to the browsers as Server-Sent Events.
 package sse
 
 import (

@@ -25,7 +25,7 @@ const (
 	maxWordlistFiles  = 4
 )
 
-// phaseBudgets are the worker's budgets (plan/05 §3.2). The fake reports them like the worker does; the monitor
+// phaseBudgets are the worker's budgets. The fake reports them like the worker does; the monitor
 // never hard-codes them.
 var phaseBudgets = map[workerapi.Phase]int{
 	workerapi.PhaseStarting:     60,

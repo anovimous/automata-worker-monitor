@@ -10,7 +10,7 @@ import (
 	"github.com/anovimous/automata-worker-monitor/internal/workerapi"
 )
 
-// WorkerView is a worker as the API shows it (plan/07 §7.1). The parts of the delayed and rejected features are left
+// WorkerView is a worker as the API shows it. The parts of the delayed and rejected features are left
 // out: the dependencies card and the heartbeat age (H4, H5), the job CPU (R5), the network rates (R3), the job link
 // (A4).
 type WorkerView struct {
@@ -333,7 +333,7 @@ func (f *Fleet) Overview() Overview {
 	return o
 }
 
-// Filter selects workers of the list (plan/07 §7: ?host=&health=&lifecycle=&phase=&routine=&q=).
+// Filter selects workers of the list (?host=&health=&lifecycle=&phase=&routine=&q=).
 type Filter struct {
 	Host, Health, Lifecycle, Phase, Routine, Q string
 }

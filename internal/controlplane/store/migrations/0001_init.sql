@@ -1,4 +1,4 @@
--- The registry of the workers control plane (plan/07-workers-control-plane.md §2). There is no login (O3 rejected)
+-- The registry of the workers control plane. There is no login (O3 rejected)
 -- and no audit (O2 rejected): no sessions, no audit_log, no actor on the events. Times are RFC 3339 UTC text.
 
 CREATE TABLE host_state (

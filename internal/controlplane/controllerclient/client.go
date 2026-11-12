@@ -1,4 +1,4 @@
-// Package controllerclient calls the API of a worker machine controller (plan/06-worker-machine-controller.md §3),
+// Package controllerclient calls the API of a worker machine controller,
 // with the host's bearer token, over TLS with the host's CA when the URL is https.
 package controllerclient
 

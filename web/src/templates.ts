@@ -1,4 +1,4 @@
-// Helpers of the template editor (plan/08 §3.6), without the DOM so that they can be tested.
+// Helpers of the template editor, without the DOM so that they can be tested.
 import type { Template, TemplateInput } from "@/types";
 
 // looksSecret: an env key that seems to hold a secret; secrets belong in the env file on the host.

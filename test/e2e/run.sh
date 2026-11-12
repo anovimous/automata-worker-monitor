@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end test of the monitor (plan/11 P7): a worker machine controller and the workers control plane in compose,
+# End-to-end test of the monitor: a worker machine controller and the workers control plane in compose,
 # fakeworkers created through the API, the scenarios of P4 and the two cases fixed in P5 checked with curl and jq.
 # Needs Docker, curl, jq and the images of `make images` (E2E_VERSION, default dev). Everything it creates is removed
 # at the end, also on a failure; its workers are w-e2e-…, so the workers of another stack on this machine are left alone.

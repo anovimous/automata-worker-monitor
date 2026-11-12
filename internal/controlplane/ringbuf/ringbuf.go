@@ -1,5 +1,5 @@
 // Package ringbuf keeps the last points of a series in memory: the live history of the charts (1 h at 5 s). It is lost
-// when the workers control plane restarts; the minute samples in SQLite are not (plan/09-history.md).
+// when the workers control plane restarts; the minute samples in SQLite are not.
 package ringbuf
 
 import "sync"

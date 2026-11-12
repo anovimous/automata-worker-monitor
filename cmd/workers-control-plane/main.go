@@ -1,5 +1,5 @@
 // workers-control-plane keeps the registry of the Automata workers, decides their health, runs the operator's actions
-// through the worker machine controllers and serves the API and the UI (plan/07-workers-control-plane.md).
+// through the worker machine controllers and serves the API and the UI.
 package main
 
 import (

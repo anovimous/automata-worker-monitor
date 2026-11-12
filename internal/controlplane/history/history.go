@@ -1,4 +1,4 @@
-// Package history turns the polls into the minute samples kept in SQLite (plan/09-history.md §1.3): the running
+// Package history turns the polls into the minute samples kept in SQLite: the running
 // sums and maxima of the current minute, per worker and per host, written all at once when a poll falls into the
 // next minute.
 package history

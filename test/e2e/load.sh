@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Load check of the monitor (plan/11 P7, budget of plan/02 §4): 50 fakeworkers on one host, then the CPU and the memory
+# Load check of the monitor: 50 fakeworkers on one host, then the CPU and the memory
 # of the worker machine controller (and of the workers control plane) sampled with docker stats. The stack is the one
 # of the end-to-end test (compose.yml); everything it creates is removed at the end.
 #
@@ -71,5 +71,5 @@ report() { # container
 }
 report "$CONTROLLER" "worker machine controller"
 report "$CONTROL_PLANE" "workers control plane"
-echo "budget (plan/02 §4): worker machine controller < 2 % of one core and < 100 MB for 50 workers"
+echo "budget: worker machine controller < 2 % of one core and < 100 MB for 50 workers"
 rm -f "$samples"

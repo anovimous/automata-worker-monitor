@@ -1,5 +1,5 @@
-// Package config reads the configuration of the worker machine controller from its env vars
-// (plan/06-worker-machine-controller.md §1). A wrong value is an error, never a silent default.
+// Package config reads the configuration of the worker machine controller from its env vars. A wrong value is an
+// error, never a silent default.
 package config
 
 import (

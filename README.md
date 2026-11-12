@@ -77,7 +77,6 @@ Go 1.26, Node 20, Docker.
 | `web/` | the UI (React, Vite, TypeScript, Tailwind, TanStack, uPlot) |
 | `deploy/` | the compose files |
 | `test/e2e/` | the end-to-end test and the load check |
-| `plan/` | the design: requirements, architecture, contracts, phases ([plan/README.md](plan/README.md)) |
 
 The worker side (telemetry, signals, graceful shutdown) lives in the `automata-worker` repository; its contract with
-the monitor is [plan/05-telemetry-contract.md](plan/05-telemetry-contract.md).
+the monitor is `docs/telemetry-contract.md` in that repository.

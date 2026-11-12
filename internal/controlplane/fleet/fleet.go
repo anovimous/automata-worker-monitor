@@ -1,6 +1,6 @@
 // Package fleet is the live picture of the workers: it applies the snapshots of the worker machine controllers
 // (reconciliation, health, lifecycle, events, history in memory), runs the operator's actions and provisions new
-// workers (plan/07-workers-control-plane.md §3–§6). The API reads its views; the store keeps what must survive a
+// workers. The API reads its views; the store keeps what must survive a
 // restart.
 package fleet
 

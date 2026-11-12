@@ -1,4 +1,4 @@
-// The live picture (plan/08 §1): one EventSource on /api/v1/events. The snapshot fills the caches of ['workers'] and
+// The live picture: one EventSource on /api/v1/events. The snapshot fills the caches of ['workers'] and
 // ['hosts']; worker.updated, worker.removed and host.updated patch them; worker.event adds to ['events', id] when that
 // timeline is loaded. Until the first snapshot, and when the stream is down, the queries fetch by themselves.
 import * as React from "react";

@@ -1,4 +1,4 @@
-// The activity column (plan/08 §2): what a worker is busy with, in a few words.
+// The activity column: what a worker is busy with, in a few words.
 import type { Activity } from "@/types";
 import { duration, secondsSince } from "@/format";
 

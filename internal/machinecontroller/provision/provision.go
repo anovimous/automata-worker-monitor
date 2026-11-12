@@ -1,4 +1,4 @@
-// Package provision creates and starts worker containers from a CreateWorkerRequest (plan/06 §5). The worker
+// Package provision creates and starts worker containers from a CreateWorkerRequest. The worker
 // machine controller is root-equivalent on its host, so everything a request can ask for is checked: only allowed
 // images, only named env files of the host, only the worker's own volumes and tmpfs (never a bind mount), no
 // automata.* label from the template.

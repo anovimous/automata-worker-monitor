@@ -1,4 +1,4 @@
-// Package health decides the health of a worker from what was observed (plan/07-workers-control-plane.md §4). It is
+// Package health decides the health of a worker from what was observed. It is
 // one pure function: the first rule that matches gives the health, and the degradations are collected as reasons.
 package health
 

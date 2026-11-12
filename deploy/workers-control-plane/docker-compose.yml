@@ -1,4 +1,4 @@
-# The workers control plane (plan/10-deployment-security.md §3): one container, its SQLite database in a volume.
+# The workers control plane: one container, its SQLite database in a volume.
 # Before the first start:
 #   cp config.yml.example config.yml
 #   cp workers-control-plane.env.example workers-control-plane.env   # the tokens of the worker machine controllers

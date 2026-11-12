@@ -1,4 +1,4 @@
-# The worker machine controller of one Docker host (plan/10-deployment-security.md §2).
+# The worker machine controller of one Docker host.
 # Before the first start:
 #   cp worker-machine-controller.env.example worker-machine-controller.env   # then set the token and the host name
 #   cp env/default.env.example env/default.env && chmod 600 env/*.env           # the credentials of the workers

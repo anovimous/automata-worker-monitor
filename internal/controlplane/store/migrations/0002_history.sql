@@ -1,6 +1,6 @@
--- The history of the workers and of the hosts: one row per minute (plan/09-history.md §1.2). An average is weighted by
+-- The history of the workers and of the hosts: one row per minute. An average is weighted by
 -- the polls that had its value: resource_polls for the resources, rate_polls for the I/O rates (a first poll has no
--- rate yet). The per-worker network and job columns of the plan are left out: R3 and R5 are delayed.
+-- rate yet). The per-worker network and job columns are left out: R3 and R5 are delayed.
 
 CREATE TABLE worker_samples (
   worker_id        TEXT    NOT NULL,

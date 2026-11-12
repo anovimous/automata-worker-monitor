@@ -1,4 +1,4 @@
-// Package config reads the configuration file of the workers control plane (plan/07-workers-control-plane.md §1). A
+// Package config reads the configuration file of the workers control plane. A
 // value written ${NAME} is taken from the env var NAME, for the secrets. A wrong value stops the start.
 package config
 
@@ -58,7 +58,7 @@ type Polling struct {
 	WorkerMachineControllerTimeoutSeconds int `yaml:"workerMachineControllerTimeoutSeconds"`
 }
 
-// Health holds the thresholds of the health engine (plan/07 §4).
+// Health holds the thresholds of the health engine.
 type Health struct {
 	WorkerMachineControllerUnknownAfterSeconds int     `yaml:"workerMachineControllerUnknownAfterSeconds"`
 	StartingGraceSeconds                       int     `yaml:"startingGraceSeconds"`

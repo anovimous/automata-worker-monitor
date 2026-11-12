@@ -1,5 +1,5 @@
 // Package stats streams the Docker stats of the running worker containers and turns them into the resources of the
-// snapshot (plan/06-worker-machine-controller.md §4).
+// snapshot.
 package stats
 
 import (
