@@ -8,3 +8,4 @@ deploy/**/secrets
 deploy/**/*.env
 deploy/**/tls/
 deploy/**/config.yml
+/plan
